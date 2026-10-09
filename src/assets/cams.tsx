@@ -19,7 +19,7 @@ export const hightower = "https://cams.cdn-surfline.com/cdn-ec/ec-hightowerpark/
 
 export const pelican = "https://cams.cdn-surfline.com/cdn-ec/ec-pelicanbeachpark/chunklist.m3u8"
 
-export const indialanticn = "https://cams.cdn-surfline.com/cdn-ec/ec-indialanticnorth/chunklist.m3u8"
+export const indialanticn = "https://hls.cdn-surfline.com/ohio/ec-hightowerpark/playlist.m3u8"
 
 export const indialantic = "https://cams.cdn-surfline.com/cdn-ec/ec-indialantic/chunklist.m3u8"
 
