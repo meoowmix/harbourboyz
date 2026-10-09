@@ -1,3 +1,8 @@
+# Created a real functional script to import NOAA buoy data for my personal surf website.
+# I had previously tried to fetch the NOAA buoy text files directly with react but got CORS errors
+# Didn't know how to fix it so I found a swell model API which wasnt accurate at all, this fixes that
+# Plan to incorporate this with the webapp later now that I have the clean real time data
+
 def strip_line(line):
     return line.strip()
     # removes whitespace, new line
@@ -17,7 +22,7 @@ def extract_values(values):
             "swell_period": values[9],
             "water_temp": values[14]
             }
-    # data cleaning, extracts needed values, assigns keys
+    # data cleaning, extracts needed values, assigns keys (surfers only need time, swell direction/height/period to know if there's waves)
 
 def readability_conversion(value):
     if value == "MM":
@@ -43,6 +48,7 @@ def degrees_to_compass(degrees):
                   'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
     index = int(round(degrees / 22.5)) % 16
     return directions[index]
+    # returns cardinal direction from degrees
 
 def convert_to_csv(values):
     cleaned = ['' if v is None else str(v) for v in values]
