@@ -1,43 +1,57 @@
-import React, { useRef, useEffect } from 'react';
-import { hightower, pelican, indialanticn, indialantic } from '../assets/cams.tsx';
-import { SimpleGrid, Box, Badge } from '@chakra-ui/react';
-import Hls from 'hls.js';
+import React from 'react';
+import { SimpleGrid, Box, Badge, AspectRatio, Link, Text, Button } from '@chakra-ui/react';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { centralCams, type Cam } from '../assets/cams.tsx';
 import './CamCards.css';
 
-const VideoCard: React.FC<{ src: string; title: string }> = ({ src, title }) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
+const CamCard: React.FC<{ cam: Cam }> = ({ cam }) => (
+  <Box width="100%">
+    <Badge margin="2" fontSize="1em" variant="outline" colorScheme="teal">
+      {cam.title}
+    </Badge>
 
-  useEffect(() => {
-    if (videoRef.current && Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(src);
-      hls.attachMedia(videoRef.current);
-    } else if (videoRef.current?.canPlayType('application/vnd.apple.mpegurl')) {
-      videoRef.current.src = src;
-    }
-  }, [src]);
+    {cam.embed ? (
+      <AspectRatio ratio={16 / 9}>
+        <iframe
+          src={cam.src}
+          title={cam.title}
+          allow="autoplay; fullscreen"
+          allowFullScreen
+          style={{ border: 0 }}
+        />
+      </AspectRatio>
+    ) : (
+      <AspectRatio ratio={16 / 9}>
+        <Box display="flex" alignItems="center" justifyContent="center" bg="gray.700" borderRadius="md">
+          <Button
+            as="a"
+            href={cam.src}
+            target="_blank"
+            rel="noopener noreferrer"
+            colorScheme="teal"
+            rightIcon={<ExternalLinkIcon />}
+          >
+            Watch on {cam.credit}
+          </Button>
+        </Box>
+      </AspectRatio>
+    )}
 
-  return (
-    <Box width="100%" position="relative" >
-      <Badge margin= '2' fontSize='1em' variant='outline' colorScheme='teal'>{title}</Badge>
-      <video
-        ref={videoRef}
-        controls
-        width="100%"
-        height="100%"
-        style={{ objectFit: 'cover', display: 'block' }}
-      />
-    </Box>
-  );
-};
+    <Text fontSize="xs" color="gray.500" mt={1} ml={2}>
+      Cam:{' '}
+      <Link href={cam.creditUrl} isExternal color="teal.400">
+        {cam.credit}
+      </Link>
+    </Text>
+  </Box>
+);
 
 export default function CamCards() {
   return (
-    <SimpleGrid spacing={25} templateColumns="repeat(auto-fill)">
-      <VideoCard src={hightower} title="Hightower" />
-      <VideoCard src={pelican} title="Pelican" />
-      <VideoCard src={indialanticn} title="Indialantic N" />
-      <VideoCard src={indialantic} title="Indialantic" />
+    <SimpleGrid spacing={25} columns={{ base: 1, md: 2 }}>
+      {centralCams.map((cam) => (
+        <CamCard key={cam.title} cam={cam} />
+      ))}
     </SimpleGrid>
   );
 }
