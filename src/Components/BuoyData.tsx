@@ -61,7 +61,7 @@ const BuoyData: React.FC = () => {
   useEffect(() => {
     const fetchBuoyData = async () => {
       try {
-        const response = await axios.get<BuoyFile>(BUOY_URL);
+        const response = await axios.get<BuoyFile>(`${BUOY_URL}?t=${Date.now()}`);
         if (response.data.current) {
           setReading(response.data.current);
           setHistory(response.data.history);
@@ -76,7 +76,7 @@ const BuoyData: React.FC = () => {
     };
 
     fetchBuoyData();
-    const interval = setInterval(fetchBuoyData, 10 * 60 * 1000); // refresh every 10 min
+    const interval = setInterval(fetchBuoyData, 5 * 60 * 1000); // refresh every 5 min
     return () => clearInterval(interval);
   }, []);
 
