@@ -17,6 +17,17 @@ MISSING = {'MM', 'N/A', '-'}
 COMPASS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
            'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW']
 
+RESOLVER = 'https://cams-gns4.onrender.com'
+CAM_ALIASES = {
+    'jetty_park': '6abe8ff723663',
+    'cocoa_beach_pier': '6abece14b2d9a',
+    'cocoa_beach_streets': '6a7dcf1fdba07',
+    'rcs': '6ab5393e47a81',
+    'indialantic': '6ab53f2c001bd',
+    'melbourne_beach': '6ab59441a59bd',
+    'sebastian_inlet': '6abe8d06749e0',
+}
+
 
 def download_raw(url, path):
     """Download the raw NDBC file, save a copy, and return its lines."""
@@ -111,6 +122,22 @@ def build_site_data(lines):
         'history': complete[:HISTORY_COUNT],
     }
 
+def build_cam_data():
+    """Resolve each cam's current HLS URL through the webcam-resolver."""
+    cams = {}
+    for name, alias in CAM_ALIASES.items():
+        try:
+            url = f'{RESOLVER}/camera/ipcamlive/{alias}'
+            request = urllib.request.Request(url, headers={'User-Agent': 'harbourboyz-cam-resolver'})
+            with urllib.request.urlopen(request, timeout=30) as response:
+                stream_url = response.read().decode('utf-8').strip()
+            cams[name] = stream_url if stream_url.startswith('http') else None
+        except Exception as e:
+            print(f"  Cam {name} failed: {e}")
+            cams[name] = None
+        print(f"  Cam {name}: {'OK' if cams.get(name) else 'FAILED'}")
+    return cams
+
 
 if __name__ == '__main__':
     os.makedirs('data', exist_ok=True)
@@ -124,3 +151,9 @@ if __name__ == '__main__':
 
     print(f"Current: {site_data['current']}")
     print(f"Wrote {len(site_data['history'])} history readings to {JSON_PATH}")
+
+    print("Resolving cams...")
+    cam_data = build_cam_data()
+    with open('output/cams.json', 'w') as f:
+        json.dump(cam_data, f, indent=2)
+    print("Wrote output/cams.json")

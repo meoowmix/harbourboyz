@@ -1,14 +1,20 @@
-import React, { useEffect, useRef } from 'react';
-import { SimpleGrid, Box, Badge, AspectRatio, Link, Text } from '@chakra-ui/react';
+import React, { useEffect, useRef, useState } from 'react';
+import { SimpleGrid, Box, Badge, AspectRatio, Link, Text, Spinner } from '@chakra-ui/react';
 import Hls from 'hls.js';
-import { type Cam, HLS_CAMS, IFRAME_CAMS } from '../assets/cams.tsx';
+import { type Cam, IFRAME_CAMS } from '../assets/cams.tsx';
 import './CamCards.css';
 
-const CamCard: React.FC<{ cam: Cam }> = ({ cam }) => {
+const CAMS_URL =
+  'https://raw.githubusercontent.com/meoowmix/harbourboyz/main/processor/output/cams.json';
+
+const CamCard: React.FC<{ cam: Cam; streamUrl: string | null; loading: boolean }> = ({
+  cam,
+  streamUrl,
+  loading,
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const isIframe = cam.camKey.startsWith('_iframe_');
   const iframeSrc = isIframe ? IFRAME_CAMS[cam.camKey] : null;
-  const streamUrl = isIframe ? null : HLS_CAMS[cam.camKey];
 
   useEffect(() => {
     if (isIframe || !streamUrl || !videoRef.current) return;
@@ -42,6 +48,14 @@ const CamCard: React.FC<{ cam: Cam }> = ({ cam }) => {
       );
     }
 
+    if (loading || !streamUrl) {
+      return (
+        <Box display="flex" alignItems="center" justifyContent="center" bg="gray.800">
+          <Spinner color="teal" />
+        </Box>
+      );
+    }
+
     return (
       <video
         ref={videoRef}
@@ -70,10 +84,26 @@ const CamCard: React.FC<{ cam: Cam }> = ({ cam }) => {
 };
 
 export default function CamGrid({ cams }: { cams: Cam[] }) {
+  const [streams, setStreams] = useState<Record<string, string | null>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${CAMS_URL}?t=${Date.now()}`)
+      .then((r) => r.json())
+      .then((data) => setStreams(data))
+      .catch((err) => console.error('Failed to fetch cam streams:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <SimpleGrid spacing={25} columns={{ base: 1, md: 2 }}>
       {cams.map((cam) => (
-        <CamCard key={cam.title} cam={cam} />
+        <CamCard
+          key={cam.title}
+          cam={cam}
+          streamUrl={streams[cam.camKey] ?? null}
+          loading={loading}
+        />
       ))}
     </SimpleGrid>
   );

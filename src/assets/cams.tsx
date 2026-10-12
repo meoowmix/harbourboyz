@@ -5,20 +5,6 @@ export interface Cam {
   creditUrl: string;
 }
 
-const RESOLVER = 'https://cams-gns4.onrender.com';
-
-// camKey -> resolver stream URL (redirects to the current .m3u8)
-
-export const HLS_CAMS: Record<string, string> = {
-  jetty_park: `${RESOLVER}/stream/ipcamlive/6abe8ff723663`,
-  cocoa_beach_pier: `${RESOLVER}/stream/ipcamlive/6abece14b2d9a`,
-  cocoa_beach_streets: `${RESOLVER}/stream/ipcamlive/6a7dcf1fdba07`,
-  rcs: `${RESOLVER}/stream/ipcamlive/6ab5393e47a81`,
-  indialantic: `${RESOLVER}/stream/ipcamlive/6ab53f2c001bd`,
-  melbourne_beach: `${RESOLVER}/stream/ipcamlive/6ab59441a59bd`,
-  sebastian_inlet: `${RESOLVER}/stream/ipcamlive/6abe8d06749e0`,
-};
-
 export const IFRAME_CAMS: Record<string, string> = {
   _iframe_hightower: 'https://embed.cdn-surfline.com/cams/583499f1e411dc743a5d5297/b5a433655f33a2003d6031cc8a8357d699e8a3a3',
   _iframe_pelican: 'https://embed.cdn-surfline.com/cams/58349ed8e411dc743a5d52c9/c97936cc71147ad6ee0d408ab6e55893806b4325',
