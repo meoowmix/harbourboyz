@@ -1,11 +1,14 @@
 // components/BuoyData.tsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Text, Stat, StatNumber, Spinner, Icon } from '@chakra-ui/react';
+import { Box, Text, Spinner, Icon, SimpleGrid } from '@chakra-ui/react';
 import { ArrowUpIcon } from '@chakra-ui/icons';
 
 const BUOY_URL =
   'https://raw.githubusercontent.com/meoowmix/harbourboyz/main/processor/output/buoy.json';
+
+const COMPASS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
+                 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
 interface WaveComponent {
   height_ft: number | null;
@@ -32,25 +35,67 @@ interface BuoyFile {
 
 type Trend = 'up' | 'down' | null;
 
+const compassToDegrees = (label: string | null): number | null => {
+  if (!label) return null;
+  const index = COMPASS.indexOf(label);
+  return index === -1 ? null : index * 22.5;
+};
+
 const average = (nums: number[]) => nums.reduce((a, b) => a + b, 0) / nums.length;
 
-// Total height: avg of newest 3 readings vs. avg of readings ~3 hrs earlier.
-// Returns null when steady (change under threshold) or not enough data.
-const getTrend = (history: BuoyReading[], threshold = 0.3): Trend => {
+// Avg of newest 3 readings vs. avg of readings ~3 hrs earlier (index 6-8).
+// Skips missing values. Returns null when steady or not enough data.
+const getTrend = (
+  history: BuoyReading[],
+  pick: (r: BuoyReading) => number | null,
+  threshold = 0.3
+): Trend => {
   if (history.length < 9) return null;
-  const recent = average(history.slice(0, 3).map((r) => r.height_ft));
-  const earlier = average(history.slice(6, 9).map((r) => r.height_ft));
-  const diff = recent - earlier;
+  const recent = history.slice(0, 3).map(pick).filter((n): n is number => n !== null);
+  const earlier = history.slice(6, 9).map(pick).filter((n): n is number => n !== null);
+  if (recent.length === 0 || earlier.length === 0) return null;
+  const diff = average(recent) - average(earlier);
   if (diff > threshold) return 'up';
   if (diff < -threshold) return 'down';
   return null;
 };
 
-const formatSwell = (swell: WaveComponent) => {
-  if (swell.height_ft === null || swell.period_s === null || swell.height_ft === 0) {
-    return 'Swell —';
-  }
-  return `Swell ${swell.height_ft.toFixed(1)}' @ ${Math.round(swell.period_s)}s ${swell.direction ?? ''}`.trim();
+const WaveRow: React.FC<{ label: string; wave: WaveComponent; trend: Trend }> = ({
+  label,
+  wave,
+  trend,
+}) => {
+  const height = wave.height_ft;
+  const period = wave.period_s;
+  const deg = compassToDegrees(wave.direction);
+
+  return (
+    <Box textAlign="center">
+      <Text fontSize="sm" color="gray.500">{label}</Text>
+      {height === null || period === null || height === 0 ? (
+        <Text fontSize="2xl" color="gray.500">—</Text>
+      ) : (
+        <Box display="flex" alignItems="baseline" justifyContent="center" gap={2} color="teal">
+          {deg !== null && (
+            <Icon
+              as={ArrowUpIcon}
+              w={6}
+              h={6}
+              alignSelf="center"
+              transform={`rotate(${(deg + 180) % 360}deg)`}
+            />
+          )}
+          <Text fontSize="2xl" fontWeight="bold">
+            {height.toFixed(1)}'
+            {trend === 'up' && <Text as="span" fontSize="sm" color="green.400" ml={1}>▲</Text>}
+            {trend === 'down' && <Text as="span" fontSize="sm" color="red.400" ml={1}>▼</Text>}
+          </Text>
+          <Text fontSize="md">{Math.round(period)}s</Text>
+          <Text fontSize="xl" fontWeight="bold">{wave.direction ?? ''}</Text>
+        </Box>
+      )}
+    </Box>
+  );
 };
 
 const BuoyData: React.FC = () => {
@@ -102,31 +147,19 @@ const BuoyData: React.FC = () => {
     minute: '2-digit',
   });
 
-  const trend = getTrend(history);
+  const swellTrend = getTrend(history, (r) => r.swell.height_ft);
+  const windTrend = getTrend(history, (r) => r.wind_waves.height_ft);
 
   return (
-    <Stat mt={4}>
-      <Box display="flex" justifyContent="center" alignItems="center" color="teal">
-        {reading.direction_deg !== null && (
-          <Icon
-            as={ArrowUpIcon}
-            w={8}
-            h={8}
-            transform={`rotate(${(reading.direction_deg + 180) % 360}deg)`}
-            mr={2}
-          />
-        )}
-        <StatNumber>
-          {reading.direction ?? '—'} {reading.height_ft.toFixed(1)}' @ {Math.round(reading.period_s)}s
-        </StatNumber>
-      </Box>
-      <Text textAlign="center" fontSize="sm" color="gray.500" mt={1}>
-        {formatSwell(reading.swell)} ·{' '}
-        {trend === 'up' && <Text as="span" color="green.400">▲ · </Text>}
-        {trend === 'down' && <Text as="span" color="red.400">▼ · </Text>}
-        {readingTime}
+    <Box mt={4}>
+      <SimpleGrid columns={2} spacing={4}>
+        <WaveRow label="swell" wave={reading.swell} trend={swellTrend} />
+        <WaveRow label="wind wave" wave={reading.wind_waves} trend={windTrend} />
+      </SimpleGrid>
+      <Text textAlign="center" fontSize="sm" color="gray.500" mt={2}>
+        Cape 20m · 41009 · {readingTime}
       </Text>
-    </Stat>
+    </Box>
   );
 };
 
