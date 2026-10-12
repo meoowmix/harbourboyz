@@ -8,7 +8,7 @@ import './CamCards.css';
 const CamCard: React.FC<{ cam: Cam }> = ({ cam }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
+    useEffect(() => {
     if (!cam.hls || !cam.embed || !videoRef.current) return;
 
     const video = videoRef.current;
@@ -21,13 +21,9 @@ const CamCard: React.FC<{ cam: Cam }> = ({ cam }) => {
       });
       hls.loadSource(cam.src);
       hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(() => {});
-      });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
       // Safari
       video.src = cam.src;
-      video.play().catch(() => {});
     }
 
     return () => {

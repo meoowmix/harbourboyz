@@ -59,7 +59,7 @@ export const centralCams: Cam[] = [
   },
   {
     title: 'Indian Harbour',
-    src: 'https://g1.ipcamlive.com/player/player.php?alias=5a03b2517977d&autoplay=1&mute=1',
+    src: 'https://g1.ipcamlive.com/player/player.php?alias=5a03b2517977d&&mute=1',
     credit: 'Harbour House',
     creditUrl: 'https://www.harbourhouseevents.com/surfcam',
     embed: true,
