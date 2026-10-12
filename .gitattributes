@@ -1,0 +1,2 @@
+processor/output/buoy.json merge=theirs
+processor/output/cams.json merge=theirs
