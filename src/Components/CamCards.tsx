@@ -47,7 +47,7 @@ const CamCard: React.FC<{ cam: Cam }> = ({ cam }) => {
             <video
               ref={videoRef}
               controls
-              autoPlay
+              // autoPlay
               muted
               playsInline
               style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'md' }}
@@ -56,7 +56,7 @@ const CamCard: React.FC<{ cam: Cam }> = ({ cam }) => {
             <iframe
               src={cam.src}
               title={cam.title}
-              allow="autoplay; fullscreen"
+              allow="fullscreen" //removed autoplay here
               scrolling="no"
               style={{ border: 0 }}
             />
