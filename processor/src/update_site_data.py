@@ -131,7 +131,10 @@ def build_cam_data():
             request = urllib.request.Request(url, headers={'User-Agent': 'harbourboyz-cam-resolver'})
             with urllib.request.urlopen(request, timeout=30) as response:
                 stream_url = response.read().decode('utf-8').strip()
-            cams[name] = stream_url if stream_url.startswith('http') else None
+            if stream_url.startswith('http'):
+                cams[name] = stream_url.replace('http://', 'https://', 1)
+            else:
+                cams[name] = None
         except Exception as e:
             print(f"  Cam {name} failed: {e}")
             cams[name] = None

@@ -1,5 +1,6 @@
 #YY  MM DD hh mm WVHT  SwH  SwP  WWH  WWP SwD WWD  STEEPNESS  APD MWD
 #yr  mo dy hr mn    m    m  sec    m  sec  -  degT     -      sec degT
+2026 10 12 21 10  0.9  0.8  5.0  0.4  3.8 NNW NNW VERY_STEEP  4.5 329
 2026 10 12 20 40  0.9  0.6  8.3  0.6  4.8 NNE NNW VERY_STEEP  4.4 331
 2026 10 12 20 10  0.9  0.5  8.3  0.7  5.0 ENE NNW VERY_STEEP  4.3 333
 2026 10 12 19 40  0.9  0.6  5.6  0.7  4.3   N NNW      STEEP  4.3 352
