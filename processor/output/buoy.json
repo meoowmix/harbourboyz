@@ -1,24 +1,41 @@
 {
   "station": "41009",
-  "generated_at": "2026-11-06T17:30:13.777189-05:00",
+  "generated_at": "2026-11-06T17:45:11.425308-05:00",
   "current": {
-    "time": "2026-11-06T16:40:00-05:00",
-    "height_ft": 4.6,
+    "time": "2026-11-06T17:10:00-05:00",
+    "height_ft": 4.9,
     "period_s": 10.0,
     "direction": "ENE",
     "direction_deg": 67.5,
     "swell": {
-      "height_ft": 4.6,
+      "height_ft": 4.9,
       "period_s": 10.0,
       "direction": "ENE"
     },
     "wind_waves": {
       "height_ft": 0.7,
-      "period_s": 3.7,
+      "period_s": 3.8,
       "direction": "E"
     }
   },
   "history": [
+    {
+      "time": "2026-11-06T17:10:00-05:00",
+      "height_ft": 4.9,
+      "period_s": 10.0,
+      "direction": "ENE",
+      "direction_deg": 67.5,
+      "swell": {
+        "height_ft": 4.9,
+        "period_s": 10.0,
+        "direction": "ENE"
+      },
+      "wind_waves": {
+        "height_ft": 0.7,
+        "period_s": 3.8,
+        "direction": "E"
+      }
+    },
     {
       "time": "2026-11-06T16:40:00-05:00",
       "height_ft": 4.6,
@@ -815,23 +832,6 @@
       "wind_waves": {
         "height_ft": 0.7,
         "period_s": 3.3,
-        "direction": "ENE"
-      }
-    },
-    {
-      "time": "2026-11-05T17:10:00-05:00",
-      "height_ft": 4.6,
-      "period_s": 10.8,
-      "direction": "ENE",
-      "direction_deg": 67.5,
-      "swell": {
-        "height_ft": 4.3,
-        "period_s": 10.8,
-        "direction": "ENE"
-      },
-      "wind_waves": {
-        "height_ft": 0.7,
-        "period_s": 3.8,
         "direction": "ENE"
       }
     }
