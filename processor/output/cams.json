@@ -1,7 +1,7 @@
 {
   "jetty_park": "https://s66.ipcamlive.com/streams/422lwebqy4ojgmpr7/stream.m3u8",
   "cocoa_beach_pier": "https://s57.ipcamlive.com/streams/393edq1cgmqwbzkl4/stream.m3u8",
-  "cocoa_beach_streets": null,
+  "cocoa_beach_streets": "https://s156.ipcamlive.com/streams/9clbkfnwamvy8lowi/stream.m3u8",
   "rcs": "https://s28.ipcamlive.com/streams/1cqure7wa4mopjlhr/stream.m3u8",
   "indialantic": "https://s52.ipcamlive.com/streams/34tiflpfcpdrh1mwv/stream.m3u8",
   "melbourne_beach": "https://s125.ipcamlive.com/streams/7dmnm7ksdeo1wc58r/stream.m3u8",
